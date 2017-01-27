@@ -1,0 +1,2364 @@
+﻿<?xml version="1.0" encoding="utf-16"?>
+<Report xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Name>TerraNova_StudentReportLabels</Name>
+  <Threads>10</Threads>
+  <InstanceServer>DCWRPTP011\SQL</InstanceServer>
+  <Workstation />
+  <TableLoadMethod>Automatic</TableLoadMethod>
+  <Description />
+  <Username>ZLeirdahl</Username>
+  <InstanceID>B762C312-CA94-4E42-96CA-66A2F575A123</InstanceID>
+  <Version>4.14.0.0</Version>
+  <ReferenceFilename />
+  <Parameters>
+    <Parameter>
+      <Name>AdministrationID</Name>
+      <Value>593117</Value>
+    </Parameter>
+  </Parameters>
+  <DataSources>
+    <DataSourceBase xsi:type="SqlServerDataSource">
+      <Name>PROD</Name>
+      <ConnectionString>Data Source=DCWMSQP178\SQL;Initial Catalog=Terranova_edm_prod;Integrated Security=True</ConnectionString>
+    </DataSourceBase>
+    <DataSourceBase xsi:type="SqlServerDataSource">
+      <Name>DEV</Name>
+      <ConnectionString>Data Source=sqldev003\dev3;Initial Catalog=TerraNova_edm_dev;Integrated Security=True</ConnectionString>
+    </DataSourceBase>
+  </DataSources>
+  <DataSets>
+    <DataSet>
+      <Name>TN</Name>
+      <CommandText>declare @AdministrationID int = 593117;
+
+with readingScores as (
+select distinct x.StudentID, ReportID, 
+		case when Test = 'READING' then left(Round(SSScore,0),(CHARINDEX('.',SSScore)-1)) end tnREAD1,
+		case when Test = 'READING' then  convert(varchar(5),left(Round(NP,0),(CHARINDEX('.',NP)-1))) + '-' + convert(varchar(5),left(Round(NS,0),(CHARINDEX('.',NS)-1))) end tnREAD2,
+		case when Test = 'READING' then left(Round(NCESCore,0),(CHARINDEX('.',NCEScore)-1)) end tnREAD3,
+		case when Test = 'READING' then convert(varchar(5),left(Round(LP,0),(CHARINDEX('.',LP)-1))) + '-' + convert(varchar(5),left(Round(LS,0),(CHARINDEX('.',LS)-1))) end tnREAD4,
+		case when Test = 'READING' then left(Round(GEScore,1),(CHARINDEX('.',GEScore)+1)) end tnREAD5,
+		case when Test = 'READING' then left(Round(NCRScore,0),(CHARINDEX('.',NCRScore)-1)) end tnREAD6,
+		case when Test = 'READING' then convert(varchar(5),left(Round(AANPScore,0),(CHARINDEX('.',AANPScore)-1))) + '-' + convert(varchar(5),left(Round(AANSScore,0),(CHARINDEX('.',AANSScore)-1))) end tnREAD7,
+		case when AANCEScore &gt;= (AANCEScore +7) and Test = 'READING' then '+' when  AANCEScore &lt;= (AANCEScore -7) and Test = 'READING'  then '-' end tnREAD8
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID),
+
+vocabScores as (
+select distinct x.StudentID, ReportID, 
+		case when Test = 'VOCABULARY' then left(Round(SSScore,0),(CHARINDEX('.',SSScore)-1)) end tnVOC1,
+		case when Test = 'VOCABULARY' then  convert(varchar(5),left(Round(NP,0),(CHARINDEX('.',NP)-1))) + '-' + convert(varchar(5),left(Round(NS,0),(CHARINDEX('.',NS)-1))) end tnVOC2,
+		case when Test = 'VOCABULARY' then left(Round(NCESCore,0),(CHARINDEX('.',NCEScore)-1)) end tnVOC3,
+		case when Test = 'VOCABULARY' then convert(varchar(5),left(Round(LP,0),(CHARINDEX('.',LP)-1))) + '-' + convert(varchar(5),left(Round(LS,0),(CHARINDEX('.',LS)-1))) end tnVOC4,
+		case when Test = 'VOCABULARY' then left(Round(GEScore,1),(CHARINDEX('.',GEScore)+1)) end tnVOC5,
+		case when Test = 'VOCABULARY' then left(Round(NCRScore,0),(CHARINDEX('.',NCRScore)-1)) end tnVOC6,
+		case when Test = 'VOCABULARY' then convert(varchar(5),left(Round(AANPScore,0),(CHARINDEX('.',AANPScore)-1))) + '-' + convert(varchar(5),left(Round(AANSScore,0),(CHARINDEX('.',AANSScore)-1))) end tnVOC7,
+		case when AANCEScore &gt;= (AANCEScore +7) and Test = 'VOCABULARY' then '+' when  AANCEScore &lt;= (AANCEScore -7) and Test = 'VOCABULARY'  then '-' end tnVOC8
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID),
+
+readComposite as (
+select distinct x.StudentID, ReportID, 
+		case when Test = 'READING COMPOSITE' then left(Round(SSScore,0),(CHARINDEX('.',SSScore)-1)) end tnRCMP1,
+		case when Test = 'READING COMPOSITE' then  convert(varchar(5),left(Round(NP,0),(CHARINDEX('.',NP)-1))) + '-' + convert(varchar(5),left(Round(NS,0),(CHARINDEX('.',NS)-1))) end tnRCMP2,
+		case when Test = 'READING COMPOSITE' then left(Round(NCESCore,0),(CHARINDEX('.',NCEScore)-1)) end tnRCMP3,
+		case when Test = 'READING COMPOSITE' then convert(varchar(5),left(Round(LP,0),(CHARINDEX('.',LP)-1))) + '-' + convert(varchar(5),left(Round(LS,0),(CHARINDEX('.',LS)-1))) end tnRCMP4,
+		case when Test = 'READING COMPOSITE' then left(Round(GEScore,1),(CHARINDEX('.',GEScore)+1)) end tnRCMP5,
+		case when Test = 'READING COMPOSITE' then left(Round(NCRScore,0),(CHARINDEX('.',NCRScore)-1)) end tnRCMP6,
+		case when Test = 'READING COMPOSITE' then convert(varchar(5),left(Round(AANPScore,0),(CHARINDEX('.',AANPScore)-1))) + '-' + convert(varchar(5),left(Round(AANSScore,0),(CHARINDEX('.',AANSScore)-1))) end tnRCMP7,
+		case when AANCEScore &gt;= (AANCEScore +7) and Test = 'READING COMPOSITE' then '+' when  AANCEScore &lt;= (AANCEScore -7) and Test = 'READING COMPOSITE'  then '-' end tnRCMP8
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID),
+
+langScores as (
+select distinct x.StudentID, ReportID, 
+		case when Test = 'LANGUAGE' then left(Round(SSScore,0),(CHARINDEX('.',SSScore)-1)) end tnLANG1,
+		case when Test = 'LANGUAGE' then  convert(varchar(5),left(Round(NP,0),(CHARINDEX('.',NP)-1))) + '-' + convert(varchar(5),left(Round(NS,0),(CHARINDEX('.',NS)-1))) end tnLANG2,
+		case when Test = 'LANGUAGE' then left(Round(NCESCore,0),(CHARINDEX('.',NCEScore)-1)) end tnLANG3,
+		case when Test = 'LANGUAGE' then convert(varchar(5),left(Round(LP,0),(CHARINDEX('.',LP)-1))) + '-' + convert(varchar(5),left(Round(LS,0),(CHARINDEX('.',LS)-1))) end tnLANG4,
+		case when Test = 'LANGUAGE' then left(Round(GEScore,1),(CHARINDEX('.',GEScore)+1)) end tnLANG5,
+		case when Test = 'LANGUAGE' then left(Round(NCRScore,0),(CHARINDEX('.',NCRScore)-1)) end tnLANG6,
+		case when Test = 'LANGUAGE' then convert(varchar(5),left(Round(AANPScore,0),(CHARINDEX('.',AANPScore)-1))) + '-' + convert(varchar(5),left(Round(AANSScore,0),(CHARINDEX('.',AANSScore)-1))) end tnLANG7,
+		case when AANCEScore &gt;= (AANCEScore +7)  and Test = 'LANGUAGE' then '+' when  AANCEScore &lt;= (AANCEScore -7) and Test = 'LANGUAGE'  then '-' end tnLANG8
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID),
+
+langMechanicScores as (
+select distinct x.StudentID, ReportID, 
+		case when Test = 'LANGUAGE MECHANICS' then left(Round(SSScore,0),(CHARINDEX('.',SSScore)-1)) end tnMECH1,
+		case when Test = 'LANGUAGE MECHANICS' then  convert(varchar(5),left(Round(NP,0),(CHARINDEX('.',NP)-1))) + '-' + convert(varchar(5),left(Round(NS,0),(CHARINDEX('.',NS)-1))) end tnMECH2,
+		case when Test = 'LANGUAGE MECHANICS' then left(Round(NCESCore,0),(CHARINDEX('.',NCEScore)-1)) end tnMECH3,
+		case when Test = 'LANGUAGE MECHANICS' then convert(varchar(5),left(Round(LP,0),(CHARINDEX('.',LP)-1))) + '-' + convert(varchar(5),left(Round(LS,0),(CHARINDEX('.',LS)-1))) end tnMECH4,
+		case when Test = 'LANGUAGE MECHANICS' then left(Round(GEScore,1),(CHARINDEX('.',GEScore)+1)) end tnMECH5,
+		case when Test = 'LANGUAGE MECHANICS' then left(Round(NCRScore,0),(CHARINDEX('.',NCRScore)-1)) end tnMECH6,
+		case when Test = 'LANGUAGE MECHANICS' then convert(varchar(5),left(Round(AANPScore,0),(CHARINDEX('.',AANPScore)-1))) + '-' + convert(varchar(5),left(Round(AANSScore,0),(CHARINDEX('.',AANSScore)-1))) end tnMECH7,
+		case when AANCEScore &gt;= (AANCEScore +7)  and Test = 'LANGUAGE MECHANICS' then '+' when  AANCEScore &lt;= (AANCEScore -7) and Test = 'LANGUAGE MECHANICS'  then '-' end tnMECH8
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID),
+
+langComposite as (
+select distinct x.StudentID, ReportID, 
+		case when Test = 'LANGUAGE COMPOSITE' then left(Round(SSScore,0),(CHARINDEX('.',SSScore)-1)) end tnLCMP1,
+		case when Test = 'LANGUAGE COMPOSITE' then  convert(varchar(5),left(Round(NP,0),(CHARINDEX('.',NP)-1))) + '-' + convert(varchar(5),left(Round(NS,0),(CHARINDEX('.',NS)-1))) end tnLCMP2,
+		case when Test = 'LANGUAGE COMPOSITE' then left(Round(NCESCore,0),(CHARINDEX('.',NCEScore)-1)) end tnLCMP3,
+		case when Test = 'LANGUAGE COMPOSITE' then convert(varchar(5),left(Round(LP,0),(CHARINDEX('.',LP)-1))) + '-' + convert(varchar(5),left(Round(LS,0),(CHARINDEX('.',LS)-1))) end tnLCMP4,
+		case when Test = 'LANGUAGE COMPOSITE' then left(Round(GEScore,1),(CHARINDEX('.',GEScore)+1)) end tnLCMP5,
+		case when Test = 'LANGUAGE COMPOSITE' then left(Round(NCRScore,0),(CHARINDEX('.',NCRScore)-1)) end tnLCMP6,
+		case when Test = 'LANGUAGE COMPOSITE' then convert(varchar(5),left(Round(AANPScore,0),(CHARINDEX('.',AANPScore)-1))) + '-' + convert(varchar(5),left(Round(AANSScore,0),(CHARINDEX('.',AANSScore)-1))) end tnLCMP7,
+		case when AANCEScore &gt;= (AANCEScore +7) and Test = 'LANGUAGE COMPOSITE' then '+' when  AANCEScore &lt;= (AANCEScore -7) and Test = 'LANGUAGE COMPOSITE'  then '-' end tnLCMP8
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID),
+
+mathScores as (
+select distinct x.StudentID, ReportID, 
+		case when Test = 'MATH' then left(Round(SSScore,0),(CHARINDEX('.',SSScore)-1)) end tnMATH1,
+		case when Test = 'MATH' then  convert(varchar(5),left(Round(NP,0),(CHARINDEX('.',NP)-1))) + '-' + convert(varchar(5),left(Round(NS,0),(CHARINDEX('.',NS)-1))) end tnMATH2,
+		case when Test = 'MATH' then left(Round(NCESCore,0),(CHARINDEX('.',NCEScore)-1)) end tnMATH3,
+		case when Test = 'MATH' then convert(varchar(5),left(Round(LP,0),(CHARINDEX('.',LP)-1))) + '-' + convert(varchar(5),left(Round(LS,0),(CHARINDEX('.',LS)-1))) end tnMATH4,
+		case when Test = 'MATH' then left(Round(GEScore,1),(CHARINDEX('.',GEScore)+1)) end tnMATH5,
+		case when Test = 'MATH' then left(Round(NCRScore,0),(CHARINDEX('.',NCRScore)-1)) end tnMATH6,
+		case when Test = 'MATH' then convert(varchar(5),left(Round(AANPScore,0),(CHARINDEX('.',AANPScore)-1))) + '-' + convert(varchar(5),left(Round(AANSScore,0),(CHARINDEX('.',AANSScore)-1))) end tnMATH7,
+		case when AANCEScore &gt;= (AANCEScore +7)  and Test = 'MATH' then '+' when  AANCEScore &lt;= (AANCEScore -7) and Test = 'MATH'  then '-' end tnMATH8
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID),
+
+computationMathScores as (
+select distinct x.StudentID, ReportID, 
+		case when Test = 'COMPUTATIONAL MATHEMATICS' then left(Round(SSScore,0),(CHARINDEX('.',SSScore)-1)) end tnCOMP1,
+		case when Test = 'COMPUTATIONAL MATHEMATICS' then  convert(varchar(5),left(Round(NP,0),(CHARINDEX('.',NP)-1))) + '-' + convert(varchar(5),left(Round(NS,0),(CHARINDEX('.',NS)-1))) end tnCOMP2,
+		case when Test = 'COMPUTATIONAL MATHEMATICS' then left(Round(NCESCore,0),(CHARINDEX('.',NCEScore)-1)) end tnCOMP3,
+		case when Test = 'COMPUTATIONAL MATHEMATICS' then convert(varchar(5),left(Round(LP,0),(CHARINDEX('.',LP)-1))) + '-' + convert(varchar(5),left(Round(LS,0),(CHARINDEX('.',LS)-1))) end tnCOMP4,
+		case when Test = 'COMPUTATIONAL MATHEMATICS' then left(Round(GEScore,1),(CHARINDEX('.',GEScore)+1)) end tnCOMP5,
+		case when Test = 'COMPUTATIONAL MATHEMATICS' then left(Round(NCRScore,0),(CHARINDEX('.',NCRScore)-1)) end tnCOMP6,
+		case when Test = 'COMPUTATIONAL MATHEMATICS' then convert(varchar(5),left(Round(AANPScore,0),(CHARINDEX('.',AANPScore)-1))) + '-' + convert(varchar(5),left(Round(AANSScore,0),(CHARINDEX('.',AANSScore)-1))) end tnCOMP7,
+		case when AANCEScore &gt;= (AANCEScore +7)  and Test = 'COMPUTATIONAL MATHEMATICS' then '+' when  AANCEScore &lt;= (AANCEScore -7) and Test = 'COMPUTATIONAL MATHEMATICS'  then '-' end tnCOMP8
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID),
+
+mathComposite as (
+select distinct x.StudentID, ReportID, 
+		case when Test = 'MATH COMPOSITE' then left(Round(SSScore,0),(CHARINDEX('.',SSScore)-1)) end tnMCMP1,
+		case when Test = 'MATH COMPOSITE' then  convert(varchar(5),left(Round(NP,0),(CHARINDEX('.',NP)-1))) + '-' + convert(varchar(5),left(Round(NS,0),(CHARINDEX('.',NS)-1))) end tnMCMP2,
+		case when Test = 'MATH COMPOSITE' then left(Round(NCESCore,0),(CHARINDEX('.',NCEScore)-1)) end tnMCMP3,
+		case when Test = 'MATH COMPOSITE' then convert(varchar(5),left(Round(LP,0),(CHARINDEX('.',LP)-1))) + '-' + convert(varchar(5),left(Round(LS,0),(CHARINDEX('.',LS)-1))) end tnMCMP4,
+		case when Test = 'MATH COMPOSITE' then left(Round(GEScore,1),(CHARINDEX('.',GEScore)+1)) end tnMCMP5,
+		case when Test = 'MATH COMPOSITE' then left(Round(NCRScore,0),(CHARINDEX('.',NCRScore)-1)) end tnMCMP6,
+		case when Test = 'MATH COMPOSITE' then convert(varchar(5),left(Round(AANPScore,0),(CHARINDEX('.',AANPScore)-1))) + '-' + convert(varchar(5),left(Round(AANSScore,0),(CHARINDEX('.',AANSScore)-1))) end tnMCMP7,
+		case when AANCEScore &gt;= (AANCEScore +7) and Test = 'MATH COMPOSITE' then '+' when  AANCEScore &lt;= (AANCEScore -7) and Test = 'MATH COMPOSITE'  then '-' end tnMCMP8
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID),
+
+totalScores as (
+select distinct x.StudentID, ReportID, 
+		case when Test = 'TOTAL SCORE' then left(Round(SSScore,0),(CHARINDEX('.',SSScore)-1)) end tnTotScor1,
+		case when Test = 'TOTAL SCORE' then  convert(varchar(5),left(Round(NP,0),(CHARINDEX('.',NP)-1))) + '-' + convert(varchar(5),left(Round(NS,0),(CHARINDEX('.',NS)-1))) end tnTotScor2,
+		case when Test = 'TOTAL SCORE' then left(Round(NCESCore,0),(CHARINDEX('.',NCEScore)-1)) end tnTotScor3,
+		case when Test = 'TOTAL SCORE' then convert(varchar(5),left(Round(LP,0),(CHARINDEX('.',LP)-1))) + '-' + convert(varchar(5),left(Round(LS,0),(CHARINDEX('.',LS)-1))) end tnTotScor4,
+		case when Test = 'TOTAL SCORE' then left(Round(GEScore,1),(CHARINDEX('.',GEScore)+1)) end tnTotScor5,
+		case when Test = 'TOTAL SCORE' then left(Round(NCRScore,0),(CHARINDEX('.',NCRScore)-1)) end tnTotScor6,
+		case when Test = 'TOTAL SCORE' then convert(varchar(5),left(Round(AANPScore,0),(CHARINDEX('.',AANPScore)-1))) + '-' + convert(varchar(5),left(Round(AANSScore,0),(CHARINDEX('.',AANSScore)-1))) end tnTotScor7,
+		case when AANCEScore &gt;= (AANCEScore +7) and Test = 'TOTAL SCORE' then '+' when  AANCEScore &lt;= (AANCEScore -7) and Test = 'TOTAL SCORE'  then '-' end tnTotScor8
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID),
+
+scienceScores as (
+select distinct x.StudentID, ReportID, 
+		case when Test = 'SCIENCE' then left(Round(SSScore,0),(CHARINDEX('.',SSScore)-1)) end tnSCI1,
+		case when Test = 'SCIENCE' then  convert(varchar(5),left(Round(NP,0),(CHARINDEX('.',NP)-1))) + '-' + convert(varchar(5),left(Round(NS,0),(CHARINDEX('.',NS)-1))) end tnSCI2,
+		case when Test = 'SCIENCE' then left(Round(NCESCore,0),(CHARINDEX('.',NCEScore)-1)) end tnSCI3,
+		case when Test = 'SCIENCE' then convert(varchar(5),left(Round(LP,0),(CHARINDEX('.',LP)-1))) + '-' + convert(varchar(5),left(Round(LS,0),(CHARINDEX('.',LS)-1))) end tnSCI4,
+		case when Test = 'SCIENCE' then left(Round(GEScore,1),(CHARINDEX('.',GEScore)+1)) end tnSCI5,
+		case when Test = 'SCIENCE' then left(Round(NCRScore,0),(CHARINDEX('.',NCRScore)-1)) end tnSCI6,
+		case when Test = 'SCIENCE' then convert(varchar(5),left(Round(AANPScore,0),(CHARINDEX('.',AANPScore)-1))) + '-' + convert(varchar(5),left(Round(AANSScore,0),(CHARINDEX('.',AANSScore)-1))) end tnSCI7,
+		case when AANCEScore &gt;= (AANCEScore +7)  and Test = 'SCIENCE' then '+' when  AANCEScore &lt;= (AANCEScore -7) and Test = 'SCIENCE'  then '-' end tnSCI8
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID),
+
+socStudScores as (
+select distinct x.StudentID, ReportID, 
+		case when Test = 'SOCIAL STUDIES' then left(Round(SSScore,0),(CHARINDEX('.',SSScore)-1)) end tnSocStd1,
+		case when Test = 'SOCIAL STUDIES' then  convert(varchar(5),left(Round(NP,0),(CHARINDEX('.',NP)-1))) + '-' + convert(varchar(5),left(Round(NS,0),(CHARINDEX('.',NS)-1))) end tnSocStd2,
+		case when Test = 'SOCIAL STUDIES' then left(Round(NCESCore,0),(CHARINDEX('.',NCEScore)-1)) end tnSocStd3,
+		case when Test = 'SOCIAL STUDIES' then convert(varchar(5),left(Round(LP,0),(CHARINDEX('.',LP)-1))) + '-' + convert(varchar(5),left(Round(LS,0),(CHARINDEX('.',LS)-1))) end tnSocStd4,
+		case when Test = 'SOCIAL STUDIES' then left(Round(GEScore,1),(CHARINDEX('.',GEScore)+1)) end tnSocStd5,
+		case when Test = 'SOCIAL STUDIES' then left(Round(NCRScore,0),(CHARINDEX('.',NCRScore)-1)) end tnSocStd6,
+		case when Test = 'SOCIAL STUDIES' then convert(varchar(5),left(Round(AANPScore,0),(CHARINDEX('.',AANPScore)-1))) + '-' + convert(varchar(5),left(Round(AANSScore,0),(CHARINDEX('.',AANSScore)-1))) end tnSocStd7,
+		case when AANCEScore &gt;= (AANCEScore +7) and Test = 'SOCIAL STUDIES' then '+' when  AANCEScore &lt;= (AANCEScore -7) and Test = 'SOCIAL STUDIES'  then '-' end tnSocStd8
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID),
+
+spellScores as (
+select distinct x.StudentID, ReportID,
+		case when Test = 'SPELLING' then left(Round(SSScore,0),(CHARINDEX('.',SSScore)-1)) end tnSpel1,
+		case when Test = 'SPELLING' then  convert(varchar(5),left(Round(NP,0),(CHARINDEX('.',NP)-1))) + '-' + convert(varchar(5),left(Round(NS,0),(CHARINDEX('.',NS)-1))) end tnSpel2,
+		case when Test = 'SPELLING' then left(Round(NCESCore,0),(CHARINDEX('.',NCEScore)-1)) end tnSpel3,
+		case when Test = 'SPELLING' then convert(varchar(5),left(Round(LP,0),(CHARINDEX('.',LP)-1))) + '-' + convert(varchar(5),left(Round(LS,0),(CHARINDEX('.',LS)-1))) end tnSpel4,
+		case when Test = 'SPELLING' then left(Round(GEScore,1),(CHARINDEX('.',GEScore)+1)) end tnSpel5,
+		case when Test = 'SPELLING' then left(Round(NCRScore,0),(CHARINDEX('.',NCRScore)-1)) end tnSpel6,
+		case when Test = 'SPELLING' then convert(varchar(5),left(Round(AANPScore,0),(CHARINDEX('.',AANPScore)-1))) + '-' + convert(varchar(5),left(Round(AANSScore,0),(CHARINDEX('.',AANSScore)-1))) end tnSpel7,
+		case when AANCEScore &gt;= (AANCEScore +7)  and Test = 'SPELLING' then '+' when  AANCEScore &lt;= (AANCEScore -7) and Test = 'SPELLING'  then '-' end tnSpel8
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID),
+
+wrdAnalysis as (
+select distinct x.StudentID, ReportID,
+case when Test = 'WORD ANALYSIS' then left(Round(SSScore,0),(CHARINDEX('.',SSScore)-1)) end tnWrdAnl1,
+		case when Test = 'WORD ANALYSIS' then  convert(varchar(5),left(Round(NP,0),(CHARINDEX('.',NP)-1))) + '-' + convert(varchar(5),left(Round(NS,0),(CHARINDEX('.',NS)-1))) end tnWrdAnl2,
+		case when Test = 'WORD ANALYSIS' then left(Round(NCESCore,0),(CHARINDEX('.',NCEScore)-1)) end tnWrdAnl3,
+		case when Test = 'WORD ANALYSIS' then convert(varchar(5),left(Round(LP,0),(CHARINDEX('.',LP)-1))) + '-' + convert(varchar(5),left(Round(LS,0),(CHARINDEX('.',LS)-1))) end tnWrdAnl4,
+		case when Test = 'WORD ANALYSIS' then left(Round(GEScore,1),(CHARINDEX('.',GEScore)+1)) end tnWrdAnl5,
+		case when Test = 'WORD ANALYSIS' then left(Round(NCRScore,0),(CHARINDEX('.',NCRScore)-1)) end tnWrdAnl6,
+		case when Test = 'WORD ANALYSIS' then convert(varchar(5),left(Round(AANPScore,0),(CHARINDEX('.',AANPScore)-1))) + '-' + convert(varchar(5),left(Round(AANSScore,0),(CHARINDEX('.',AANSScore)-1))) end tnWrdAnl7,
+		case when AANCEScore &gt;= (AANCEScore +7)  and Test = 'WORD ANALYSIS' then '+' when  AANCEScore &lt;= (AANCEScore -7) and Test = 'WORD ANALYSIS'  then '-' end tnWrdAnl8
+from Reporting.TerraNovaDatascoring x
+where AdministrationID = @AdministrationID),
+
+TNScores as (
+select x.StudentID, x.ReportID, tnREAD1, tnREAD2,tnREAD3,tnREAD4,tnREAD5,tnREAD6,tnREAD7,tnREAD8,
+tnVOC1,tnVOC2,tnVOC3,tnVOC4,tnVOC5,tnVOC6,tnVOC7,tnVOC8,tnRCMP1,tnRCMP2,tnRCMP3,tnRCMP4,tnRCMP5,tnRCMP6,tnRCMP7,tnRCMP8,
+tnLANG1,tnLANG2,tnLANG3,tnLANG4,tnLANG5,tnLANG6,tnLANG7,tnLANG8,tnMECH1,tnMECH2,tnMECH3,tnMECH4,tnMECH5,tnMECH6,tnMECH7,tnMECH8,
+tnLCMP1,tnLCMP2,tnLCMP3,tnLCMP4,tnLCMP5,tnLCMP6,tnLCMP7,tnLCMP8,tnMATH1,tnMATH2,tnMATH3,tnMATH4,tnMATH5,tnMATH6,tnMATH7,tnMATH8,
+tnCOMP1,tnCOMP2,tnCOMP3,tnCOMP4,tnCOMP5,tnCOMP6,tnCOMP7,tnCOMP8,tnMCMP1,tnMCMP2,tnMCMP3,tnMCMP4,tnMCMP5,tnMCMP6,tnMCMP7,tnMCMP8,
+tnTotScor1,tnTotScor2,tnTotScor3,tnTotScor4,tnTotScor5,tnTotScor6,tnTotScor7,tnTotScor8,tnSCI1,tnSCI2,tnSCI3,tnSCI4,tnSCI5,tnSCI6,tnSCI7,tnSCI8,
+tnSocStd1,tnSocStd2,tnSocStd3,tnSocStd4,tnSocStd5,tnSocStd6,tnSocStd7,tnSocStd8,tnSpel1,tnSpel2,tnSpel3,tnSpel4,tnSpel5,tnSpel6,tnSpel7,tnSpel8,
+tnWrdAnl1,tnWrdAnl2,tnWrdAnl3,tnWrdAnl4,tnWrdAnl5,tnWrdAnl6,tnWrdAnl7,tnWrdAnl8,
+ROW_NUMBER() over ( partition by x.StudentID, x.ReportID order by x.ReportID) as RowRank
+from Reporting.TerraNovaDataScoring x
+inner join readingScores a on a.ReportID = x.ReportID and a.StudentID = x.StudentID
+inner join vocabScores b on b.StudentID = x.StudentID and b.ReportID = x.ReportID
+inner join langScores c on c.StudentID = x.StudentID and c.ReportID = x.ReportID
+inner join langMechanicScores d on d.StudentID = x.StudentID and d.ReportID = x.ReportID
+inner join mathScores e on e.StudentID = x.StudentID and e.ReportID = x.ReportID
+inner join computationMathScores f on f.StudentID = x.StudentID and f.ReportID = x.ReportID
+inner join totalScores g on g.studentId = x.StudentID and g.ReportID = x.ReportID
+inner join scienceScores h on h.StudentID = x.StudentID and h.ReportID = x.ReportID
+inner join socStudScores i on i.StudentID = x.StudentID and i.ReportID = x.ReportID
+inner join spellScores j on j.StudentID = x.StudentID and j.ReportID = x.ReportID
+inner join readComposite k on k.StudentID = x.StudentID and k.ReportID = x.ReportID 
+inner join langComposite l on l.StudentID = x.StudentID and l.ReportID = x.ReportID
+inner join mathComposite m on m.StudentID = x.StudentID and m.ReportID = x.ReportID
+inner join wrdAnalysis n on n.StudentID = x.StudentID and n.ReportID = x.ReportID
+where x.AdministrationID = @AdministrationID and TestFamily &lt;&gt; 'INV'),
+
+AllStudents as (
+select distinct x.AdministrationID, StudentName = UPPER(Substring(LastName,1,11) + ', ' + Substring(FirstName,1,6) + ' ' + MiddleInitial),
+DOB = case when BirthDate is not null then Convert(varchar(8),BirthDate,1) else '//' end, x.StudentID,
+[Age] = cast(ChronologicalAge / 12 as varchar(2)) + ' YEARS ' + cast(ChronologicalAge % 12 as varchar(2)) + ' MONTH(S)', DistrictCode, SchoolCode, [Group], TestFamily
+from Reporting.TerraNovaDataStudent x
+inner join Reporting.TerraNovaDataScoring y on x.AdministrationID = y.AdministrationID and x.StudentID = y.StudentID
+where x.AdministrationID = @AdministrationID and x.ReportFlag = 1),
+
+ChooseRow as (
+select StudentID, ReportID, Max(RowRank) as RowRank 
+from TNScores
+group by StudentID, ReportID)
+
+select distinct StudentName, DOB, Age,x.StudentID, QuarterMonth, FormLevel = (sco.Form +'-'+ sco.Level), 
+Grade, TestDate = Convert(varchar(3),TestDate,101) + right(Year,2),
+y.*, x.DistrictCode, x.SchoolCode, [Group] =  x.[Group], 
+READChk = case when coalesce(tnREAD1,tnREAD2,tnREAD3,tnREAD4,tnREAD5,tnREAD6,tnREAD7,tnREAD8)= '' then 'Y' end,
+VOCChk = case when coalesce(tnVOC1,tnVOC2,tnVOC3,tnVOC4,tnVOC5,tnVOC6,tnVOC7,tnVOC8)= '' then 'Y' end,
+LANGChk = case when coalesce(tnLANG1,tnLANG2,tnLANG3,tnLANG4,tnLANG5,tnLANG6,tnLANG7,tnLANG8)= '' then 'Y' end,
+MECHChk = case when coalesce(tnMECH1,tnMECH2,tnMECH3,tnMECH4,tnMECH5,tnMECH6,tnMECH7,tnMECH8)= '' then 'Y' end,
+MATHChk = case when coalesce(tnMATH1,tnMATH2,tnMATH3,tnMATH4,tnMATH5,tnMATH6,tnMATH7,tnMATH8)= '' then 'Y' end,
+COMPChk = case when coalesce(tnCOMP1,tnCOMP2,tnCOMP3,tnCOMP4,tnCOMP5,tnCOMP6,tnCOMP7,tnCOMP8)= '' then 'Y' end,
+SCIChk = case when coalesce(tnSCI1,tnSCI2,tnSCI3,tnSCI4,tnSCI5,tnSCI6,tnSCI7,tnSCI8)= '' then 'Y' end,
+SocStdChk = case when coalesce(tnSocStd1,tnSocStd2,tnSocStd3,tnSocStd4,tnSocStd5,tnSocStd6,tnSocStd7,tnSocStd8)= '' then 'Y' end,
+SpelChk = case when coalesce(tnSpel1,tnSpel2,tnSpel3,tnSpel4,tnSpel5,tnSpel6,tnSpel7,tnSpel8)= '' then 'Y' end,
+WrdAnlChk = case when coalesce(tnWrdAnl1,tnWrdAnl2,tnWrdAnl3,tnWrdAnl4,tnWrdAnl5,tnWrdAnl6,tnWrdAnl7,tnWrdAnl8)= '' then 'Y' end,
+Flag = 1
+from Reporting.TerraNovaDataScoring sco
+inner join AllStudents x on sco.StudentID = x.StudentID
+inner join TNScores y on x.StudentID = y.StudentID and sco.ReportID = y.ReportID
+inner join ChooseRow z on y.StudentID = z.StudentID and y.ReportID = z.ReportID and y.RowRank = z.RowRank
+</CommandText>
+      <DataSourceName>DEV</DataSourceName>
+      <Updates />
+      <CommandType>Text</CommandType>
+      <Enabled>true</Enabled>
+    </DataSet>
+    <DataSet>
+      <Name>InView</Name>
+      <CommandText>declare @AdministrationID int = 593117;
+
+with SEQInViewScores as (
+select distinct x.StudentID, x.ReportID,
+	case when Test = 'SEQ' then left(Round(InNSG,0),(CHARINDEX('.',InNSG)-1)) end ivNSGSeq,
+	case when Test = 'SEQ' then left(Round(InNSA,0),(CHARINDEX('.',InNSA)-1)) end ivNSASeq,
+	case when Test = 'SEQ' then left(Round(InSS,0),(CHARINDEX('.',InSS)-1)) end ivSSSeq,
+	case when Test = 'SEQ' then left(Round(InNCR,0),(CHARINDEX('.',InNCR)-1)) end ivNCRSeq
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID and TestFamily = 'INV'),
+
+ANLGInViewScores as (
+select distinct x.StudentID, x.ReportID,
+	case when Test = 'ANLG' then left(Round(InNSG,0),(CHARINDEX('.',InNSG)-1)) end ivNSGAnl,
+	case when Test = 'ANLG' then left(Round(InNSA,0),(CHARINDEX('.',InNSA)-1)) end ivNSAAnl,
+	case when Test = 'ANLG' then left(Round(InSS,0),(CHARINDEX('.',InSS)-1)) end ivSSAnl,
+	case when Test = 'ANLG' then left(Round(InNCR,0),(CHARINDEX('.',InNCR)-1)) end ivNCRAnl
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID and TestFamily = 'INV'),
+
+QRInviewScores as (
+select distinct x.StudentID, x.ReportID,
+	case when Test = 'QR' then left(Round(InNSG,0),(CHARINDEX('.',InNSG)-1)) end ivNSGQR,
+	case when Test = 'QR' then left(Round(InNSA,0),(CHARINDEX('.',InNSA)-1)) end ivNSAQR,
+	case when Test = 'QR' then left(Round(InSS,0),(CHARINDEX('.',InSS)-1)) end ivSSQR,
+	case when Test = 'QR' then left(Round(InNCR,0),(CHARINDEX('.',InNCR)-1)) end ivNCRQR
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID and TestFamily = 'INV'),
+
+TNVRInviewScores as (
+select distinct x.StudentID, x.ReportID,
+	case when Test = 'TNVR' then left(Round(InNSG,0),(CHARINDEX('.',InNSG)-1)) end ivNSGTNVR,
+	case when Test = 'TNVR' then left(Round(InNSA,0),(CHARINDEX('.',InNSA)-1)) end ivNSATNVR,
+	case when Test = 'TNVR' then left(Round(InSS,0),(CHARINDEX('.',InSS)-1)) end ivSSTNV,
+	case when Test = 'TNVR' then left(Round(InNCR,0),(CHARINDEX('.',InNCR)-1)) end ivNCRTNV
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID and TestFamily = 'INV'),
+
+WRDSInviewScores as (
+select distinct x.StudentID, x.ReportID,
+	case when Test = 'WRDS' then left(Round(InNSG,0),(CHARINDEX('.',InNSG)-1)) end ivNSGWrds,
+	case when Test = 'WRDS' then left(Round(InNSA,0),(CHARINDEX('.',InNSA)-1)) end ivNSAWrds,
+	case when Test = 'WRDS' then left(Round(InSS,0),(CHARINDEX('.',InSS)-1)) end ivSSWrds,
+	case when Test = 'WRDS' then left(Round(InNCR,0),(CHARINDEX('.',InNCR)-1)) end ivNCRWrds
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID and TestFamily = 'INV'),
+
+CTXTInviewScores as (
+select distinct x.StudentID, x.ReportID,
+	case when Test = 'CTXT' then left(Round(InNSG,0),(CHARINDEX('.',InNSG)-1)) end ivNSGCTxt,
+	case when Test = 'CTXT' then left(Round(InNSA,0),(CHARINDEX('.',InNSA)-1)) end ivNSACTxt,
+	case when Test = 'CTXT' then left(Round(InSS,0),(CHARINDEX('.',InSS)-1)) end ivSSCTxt,
+	case when Test = 'CTXT' then left(Round(InNCR,0),(CHARINDEX('.',InNCR)-1)) end ivNCRCTxt
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID and TestFamily = 'INV'),
+
+TVRInviewScores as (
+select distinct x.StudentID, x.ReportID,
+	case when Test = 'TVR' then left(Round(InNSG,0),(CHARINDEX('.',InNSG)-1)) end ivNSGTVR,
+	case when Test = 'TVR' then left(Round(InNSA,0),(CHARINDEX('.',InNSA)-1)) end ivNSATVR,
+	case when Test = 'TVR' then left(Round(InSS,0),(CHARINDEX('.',InSS)-1)) end ivSSTV,
+	case when Test = 'TVR' then left(Round(InNCR,0),(CHARINDEX('.',InNCR)-1)) end ivNCRTV
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID and TestFamily = 'INV'),
+
+TotInViewScores as (
+select distinct x.StudentID, x.ReportID,
+	case when Test = 'TOT' then left(Round(InNSG,0),(CHARINDEX('.',InNSG)-1)) end ivNSGTot,
+	case when Test = 'TOT' then left(Round(InNSA,0),(CHARINDEX('.',InNSA)-1)) end ivNSATot,
+	case when Test = 'TOT' then left(Round(InSS,0),(CHARINDEX('.',InSS)-1)) end ivSSTot,
+	case when Test = 'TOT' then left(Round(InNCR,0),(CHARINDEX('.',InNCR)-1)) end ivNCRTot
+from Reporting.TerraNovaDataScoring x
+where AdministrationID = @AdministrationID and TestFamily = 'INV'),
+
+InViewScores as (
+	select x.StudentID, x.ReportID, InCSI, ivNSGSeq, ivNSASeq, ivSSSeq, ivNCRSeq,
+	ivNSGANL, ivNSAANL, ivSSANL, ivNCRANL,ivNSGQR, ivNSAQR, ivSSQR, ivNCRQR,
+	ivNSGTNVR, ivNSATNVR, ivSSTNV, ivNCRTNV,ivNSGWrds, ivNSAWrds, ivSSWrds, ivNCRWrds,
+	ivNSGCTxt, ivNSACTxt, ivSSCTxt, ivNCRCTxt, ivNSGTVR, ivNSATVR, ivSSTV, ivNCRTV,
+	ivNSGTot, ivNSATot, ivSSTot, ivNCRTot,
+	ROW_NUMBER() over ( partition by x.StudentID, x.ReportID order by x.ReportID) as RowRank
+	from Reporting.TerraNovaDataScoring x
+	inner join SEQInViewScores a on a.ReportID = x.ReportID and a.StudentID = x.StudentID
+	inner join ANLGInViewScores b on b.StudentID = x.StudentID and b.ReportID = x.ReportID
+	inner join QRInviewScores c on c.StudentID = x.StudentID and c.ReportID = x.ReportID
+	inner join TNVRInviewScores d on d.StudentID = x.StudentID and d.ReportID = x.ReportID
+	inner join WRDSInviewScores e on e.StudentID = x.StudentID and e.ReportID = x.ReportID
+	inner join CTXTInviewScores f on f.StudentID = x.StudentID and f.ReportID = x.ReportID
+	inner join TVRInviewScores h on h.StudentID = x.StudentID and h.ReportID = x.ReportID
+	inner join TotInviewScores g on g.StudentID = x.StudentID and g.ReportID = x.ReportID
+	where x.AdministrationID = @AdministrationID and TestFamily = 'INV'),
+
+AllStudents as (
+select distinct AdministrationID, StudentName = UPPER(Substring(LastName,1,11) + ', ' + Substring(FirstName,1,6) + ' ' + MiddleInitial),
+StudentID, [Age] = cast(ChronologicalAge / 12 as varchar(2)) + ' YR ' + cast(ChronologicalAge % 12 as varchar(2)) + ' MO', 
+DistrictCode, SchoolCode, [Group]
+from Reporting.TerraNovaDataStudent
+where AdministrationID = @AdministrationID and ReportFlag = 1),
+
+ChooseRow as (
+select StudentID, ReportID, Max(RowRank) as RowRank from InViewScores
+group by StudentID, ReportID)
+
+select distinct StudentName, Level, Age,
+CSI =left(Round(y.InCSI,0),(CHARINDEX('.',y.InCSI)-1)), y.*, DistrictCode, SchoolCode, 
+[Group], Flag = 2
+from Reporting.TerraNovaDataScoring sco
+inner join AllStudents x on sco.StudentID = x.StudentID
+inner join InViewScores y on x.StudentID = y.StudentID
+inner join ChooseRow z on y.StudentID = z.StudentID and y.ReportID = z.ReportID and y.RowRank = z.RowRank
+
+</CommandText>
+      <DataSourceName>DEV</DataSourceName>
+      <Updates />
+      <CommandType>Text</CommandType>
+      <Enabled>true</Enabled>
+    </DataSet>
+    <DataSet>
+      <Name>Resolved</Name>
+      <CommandText>with Flags as (
+	select StudentID, Flag
+	from TN
+	union 
+	select StudentID, Flag
+	from InView)
+
+select StudentID, ResolvedFlag = Sum(Flag)
+from Flags
+Group by StudentID
+
+</CommandText>
+      <DataSourceName>Repository</DataSourceName>
+      <Updates />
+      <CommandType>Text</CommandType>
+      <Enabled>true</Enabled>
+    </DataSet>
+  </DataSets>
+  <Outputs>
+    <OutputBase xsi:type="InspireDataOutput">
+      <Name>Inspire Data</Name>
+      <Enabled>true</Enabled>
+      <Documents>
+        <InspireDataOutputDocument>
+          <Name>Student Label</Name>
+          <Layout>500010</Layout>
+          <Tables>
+            <InspireDataOutputTable>
+              <Name>Combination</Name>
+              <Layout>500010</Layout>
+              <Links>
+                <InspireDataOutputLink>
+                  <Name>DistrictCode</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputLink>
+                <InspireDataOutputLink>
+                  <Name>SchoolCode</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputLink>
+              </Links>
+              <Fields>
+                <InspireDataOutputField>
+                  <Name>ivfullName</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivLvlLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivLvl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivAgeLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivAge</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivCSILabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivCSI</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGSeq</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGAnl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGQR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGTNVR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGWrds</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGCTxt</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGTVR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGTot</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSASeq</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSAAnl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSAQR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSATNVR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSAWrds</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSACTxt</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSATVR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSATot</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSSeq</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSAnl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSQR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSTNV</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSWrds</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSCTxt</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSTV</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSTot</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRSeq</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRAnl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRQR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRTNV</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRWrds</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRCTxt</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRTV</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRTot</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivYes</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnFullName</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnDOBLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnDOB</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnAgeLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnAge</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnStudentIDLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnStudentID</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnQtrMnthLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnQtrMnth</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTitle</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnFrmLvl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnGrade</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnDate</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnYes</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+              </Fields>
+              <Tables />
+              <PaperStock>White</PaperStock>
+              <PaperTray />
+              <Nested>false</Nested>
+              <CommandText>
+SELECT 
+--InView
+	ivfullName=x.StudentName,ivLvlLabel='INVIEW LVL:',ivLvl=x.Level,ivAgeLabel='AGE:',ivAge=x.Age,
+	ivCSILabel='CSI:',ivCSI=CSI,ivNSGSeq,ivNSGAnl,ivNSGQR,ivNSGTNVR,ivNSGWrds,ivNSGCTxt,ivNSGTVR,
+	ivNSGTot,ivNSASeq,ivNSAAnl,ivNSAQR,ivNSATNVR,ivNSAWrds,ivNSACTxt,ivNSATVR,ivNSATot,ivSSSeq,ivSSAnl,ivSSQR,ivSSTNV,ivSSWrds,ivSSCTxt,
+	ivSSTV,ivSSTot,ivNCRSeq,ivNCRAnl,ivNCRQR,ivNCRTNV,ivNCRWrds,ivNCRCTxt,ivNCRTV,ivNCRTot,ivYes='',
+---TN
+	tnFullName=y.StudentName,tnDOBLabel='DOB:',tnDOB=DOB,tnAgeLabel='AGE:',tnAge=y.Age,
+	tnStudentIDLabel='STUDENT ID:',tnStudentID=y.StudentID,tnQtrMnthLabel='QUARTER MONTH:',tnQtrMnth=QuarterMonth,tnTitle='Complete Battery',----
+	tnFrmLvl=FormLevel,tnGrade=Grade,tnDate=TestDate,tnScoreName1='NP-NS',tnScoreName2='SS',tnScoreName3='AANP-NS',
+	tnScoreName4='NCE',tnScoreName5='DIFF',tnScoreName6='LP-LS',
+	tnREAD1=tnREAD2,tnREAD2=tnREAD1,tnREAD3=tnREAD7,tnREAD4=tnREAD3,tnREAD5=tnREAD8,tnREAD6=tnREAD4,
+	tnVOC1=tnVOC2,tnVOC2=tnVOC1,tnVOC3=tnVOC7,tnVOC4=tnVOC3,tnVOC5=tnVOC8,tnVOC6=tnVOC4,
+	tnRCMP1=tnRCMP2,tnRCMP2=tnRCMP1,tnRCMP3=tnRCMP7,tnRCMP4=tnRCMP3,tnRCMP5=tnRCMP8,tnRCMP6=tnRCMP4,
+	tnLANG1=tnLANG2,tnLANG2=tnLANG1,tnLANG3=tnLANG7,tnLANG4=tnLANG3,tnLANG5=tnLANG8,tnLANG6=tnLANG4,
+	tnMECH1=tnMECH2,tnMECH2=tnMECH1,tnMECH3=tnMECH7,tnMECH4=tnMECH3,tnMECH5=tnMECH8,tnMECH6=tnMECH4,
+	tnLCMP1=tnLCMP2,tnLCMP2=tnLCMP1,tnLCMP3=tnLCMP7,tnLCMP4=tnLCMP3,tnLCMP5=tnLCMP8,tnLCMP6=tnLCMP4,
+	tnMATH1=tnMATH2,tnMATH2=tnMATH1,tnMATH3=tnMATH7,tnMATH4=tnMATH3,tnMATH5=tnMATH8,tnMATH6=tnMATH4,
+	tnCOMP1=tnCOMP2,tnCOMP2=tnCOMP1,tnCOMP3=tnCOMP7,tnCOMP4=tnCOMP3,tnCOMP5=tnCOMP8,tnCOMP6=tnCOMP4,
+	tnMCMP1=tnMCMP2,tnMCMP2=tnMCMP1,tnMCMP3=tnMCMP7,tnMCMP4=tnMCMP3,tnMCMP5=tnMCMP8,tnMCMP6=tnMCMP4,
+	tnTotScor1=tnTotScor2,tnTotScor2=tnTotScor1,tnTotScor3=tnTotScor7,tnTotScor4=tnTotScor3,tnTotScor5=tnTotScor8,tnTotScor6=tnTotScor4,
+	tnSCI1=tnSCI2,tnSCI2=tnSCI1,tnSCI3=tnSCI7,tnSCI4=tnSCI3,tnSCI5=tnSCI8,tnSCI6=tnSCI4,
+	tnSocStd1=tnSocStd2,tnSocStd2=tnSocStd1,tnSocStd3=tnSocStd7,tnSocStd4=tnSocStd3,tnSocStd5=tnSocStd8,tnSocStd6=tnSocStd4,
+	tnSpel1=tnSpel2,tnSpel2=tnSpel1,tnSpel3=tnSpel7,tnSpel4=tnSpel3,tnSpel5=tnSpel8,tnSpel6=tnSpel4,
+	tnWrdAnl1=tnWrdAnl2,tnWrdAnl2=tnWrdAnl1,tnWrdAnl3=tnWrdAnl7,tnWrdAnl4=tnWrdAnl3,tnWrdAnl5=tnWrdAnl8,tnWrdAnl6=tnWrdAnl4,
+	tnYes='',y.DistrictCode,y.SchoolCode,y.[Group]
+from InView x
+inner join TN y on x.StudentID = y.StudentID
+order by y.DistrictCode, y.SchoolCode, y.[Group], y.StudentName
+</CommandText>
+              <DataSourceName>Repository</DataSourceName>
+              <Updates />
+              <CommandType>Text</CommandType>
+              <Enabled>true</Enabled>
+            </InspireDataOutputTable>
+            <InspireDataOutputTable>
+              <Name>TNOnly</Name>
+              <Layout>500010</Layout>
+              <Links>
+                <InspireDataOutputLink>
+                  <Name>DistrictCode</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputLink>
+                <InspireDataOutputLink>
+                  <Name>SchoolCode</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputLink>
+              </Links>
+              <Fields>
+                <InspireDataOutputField>
+                  <Name>ivfullName</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivLvlLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivLvl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivAgeLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivAge</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivCSILabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivCSI</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGSeq</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGAnl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGQR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGTNVR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGWrds</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGCTxt</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGTVR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGTot</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSASeq</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSAAnl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSAQR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSATNVR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSAWrds</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSACTxt</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSATVR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSATot</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSSeq</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSAnl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSQR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSTNV</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSWrds</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSCTxt</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSTV</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSTot</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRSeq</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRAnl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRQR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRTNV</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRWrds</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRCTxt</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRTV</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRTot</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivYes</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnFullName</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnDOBLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnDOB</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnAgeLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnAge</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnStudentIDLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnStudentID</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnQtrMnthLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnQtrMnth</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTitle</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnFrmLvl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnGrade</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnDate</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnYes</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+              </Fields>
+              <Tables />
+              <PaperStock>White</PaperStock>
+              <PaperTray />
+              <Nested>false</Nested>
+              <CommandText>
+SELECT 
+--INVIEW
+	ivfullName='',ivLvlLabel='',ivLvl='',ivAgeLabel='',ivAge='',ivCSILabel='',ivCSI=''
+	,ivNSGSeq='',ivNSGAnl='',ivNSGQR='',ivNSGTNVR='',ivNSGWrds='',ivNSGCTxt='',ivNSGTVR=''
+	,ivNSGTot='',ivNSASeq='',ivNSAAnl='',ivNSAQR='',ivNSATNVR='',ivNSAWrds='',ivNSACTxt=''
+	,ivNSATVR='',ivNSATot='',ivSSSeq='',ivSSAnl='',ivSSQR='',ivSSTNV='',ivSSWrds='',ivSSCTxt=''
+	,ivSSTV='',ivSSTot='',ivNCRSeq='',ivNCRAnl='',ivNCRQR='',ivNCRTNV='',ivNCRWrds=''
+	,ivNCRCTxt='',ivNCRTV='',ivNCRTot='',ivYes='Y',
+---Demographics
+	tnFullName=StudentName, tnDOBLabel='DOB:', tnDOB=DOB, tnAgeLabel='AGE:', tnAge=Age,
+	tnStudentIDLabel='STUDENT ID:', tnStudentID= x.StudentID, tnQtrMnthLabel='QUARTER MONTH:',
+	tnQtrMnth=QuarterMonth,
+	tnTitle='Complete Battery',----Need to add another field to the TN table to make the Test Name longer
+	tnFrmLvl=FormLevel, tnGrade=Grade, tnDate=TestDate, 
+---Scores
+	tnScoreName1='SS', tnScoreName2='NP-NS', tnScoreName3='NCE', tnScoreName4='LP-LS', tnScoreName5='GE', tnScoreName6='NCR', 
+	case when READchk = 'Y' then tnREAD1 else '---' end tnREAD1, tnREAD2,tnREAD3,tnREAD4,tnREAD5,tnREAD6,
+	case when VOCchk = 'Y' then tnVOC1 else '---' end tnVOC1,tnVOC2,tnVOC3,tnVOC4,tnVOC5,tnVOC6,
+	tnRCMP1, tnRCMP2,tnRCMP3,tnRCMP4,tnRCMP5,tnRCMP6,
+	case when LANGchk = 'Y' then tnLANG1 else '---' end tnLANG1,tnLANG2,tnLANG3,tnLANG4,tnLANG5,tnLANG6,
+	case when MECHchk = 'Y' then tnMECH1 else '---' end tnMECH1,tnMECH2,tnMECH3,tnMECH4,tnMECH5,tnMECH6,
+	tnLCMP1,tnLCMP2,tnLCMP3,tnLCMP4,tnLCMP5,tnLCMP6,
+	case when MATHchk = 'Y' then tnMATH1 else '---' end tnMATH1, tnMATH2,tnMATH3,tnMATH4,tnMATH5,tnMATH6,
+	case when COMPchk = 'Y' then tnCOMP1 else '---' end tnCOMP1,tnCOMP2,tnCOMP3,tnCOMP4,tnCOMP5,tnCOMP6,
+	tnMCMP1,tnMCMP2,tnMCMP3,tnMCMP4,tnMCMP5,tnMCMP6,
+	tnTotScor1,tnTotScor2,tnTotScor3,tnTotScor4,tnTotScor5,tnTotScor6,
+	case when SCIchk = 'Y' then tnSCI1 else '---' end tnSCI1,tnSCI2,tnSCI3,tnSCI4,tnSCI5,tnSCI6,
+	case when SocStdchk = 'Y' then tnSocStd1 else '---' end tnSocStd1,tnSocStd2,tnSocStd3,tnSocStd4,tnSocStd5,tnSocStd6,
+	case when Spelchk = 'Y' then tnSpel1 else '---' end tnSpel1,tnSpel2,tnSpel3,tnSpel4,tnSpel5,tnSpel6,
+	case when WrdAnlchk = 'Y' then tnWrdAnl1 else '---' end tnWrdAnl1,tnWrdAnl2,tnWrdAnl3,tnWrdAnl4,tnWrdAnl5,tnWrdAnl6,
+	tnYes='', DistrictCode, SchoolCode, [Group]
+from TN x
+inner join Resolved y on x.StudentID = y.StudentID and x.Flag = y.ResolvedFlag
+order by DistrictCode, SchoolCode, [Group], StudentName
+</CommandText>
+              <DataSourceName>Repository</DataSourceName>
+              <Updates />
+              <CommandType>Text</CommandType>
+              <Enabled>true</Enabled>
+            </InspireDataOutputTable>
+            <InspireDataOutputTable>
+              <Name>InViewOnly</Name>
+              <Layout>500010</Layout>
+              <Links>
+                <InspireDataOutputLink>
+                  <Name>DistrictCode</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputLink>
+                <InspireDataOutputLink>
+                  <Name>SchoolCode</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputLink>
+              </Links>
+              <Fields>
+                <InspireDataOutputField>
+                  <Name>ivfullName</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivLvlLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivLvl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivAgeLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivAge</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivCSILabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivCSI</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGSeq</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGAnl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGQR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGTNVR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGWrds</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGCTxt</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGTVR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSGTot</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSASeq</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSAAnl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSAQR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSATNVR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSAWrds</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSACTxt</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSATVR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNSATot</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSSeq</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSAnl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSQR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSTNV</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSWrds</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSCTxt</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSTV</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivSSTot</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRSeq</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRAnl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRQR</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRTNV</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRWrds</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRCTxt</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRTV</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivNCRTot</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>ivYes</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnFullName</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnDOBLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnDOB</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnAgeLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnAge</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnStudentIDLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnStudentID</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnQtrMnthLabel</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnQtrMnth</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTitle</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnFrmLvl</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnGrade</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnDate</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnScoreName6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnREAD6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnVOC6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnRCMP6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLANG6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMECH6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnLCMP6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMATH6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnCOMP6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnMCMP6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnTotScor6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSCI6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSocStd6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnSpel6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl1</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl2</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl3</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl4</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl5</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnWrdAnl6</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+                <InspireDataOutputField>
+                  <Name>tnYes</Name>
+                  <Enabled>true</Enabled>
+                </InspireDataOutputField>
+              </Fields>
+              <Tables />
+              <PaperStock>White</PaperStock>
+              <PaperTray />
+              <Nested>false</Nested>
+              <CommandText>
+SELECT 
+--Demographics
+	ivfullName=StudentName,ivLvlLabel='INVIEW LVL:',ivLvl=Level,ivAgeLabel='AGE:',Age,
+	ivCSILabel='CSI:',ivCSI=CSI,ivNSGSeq,ivNSGAnl,ivNSGQR,ivNSGTNVR,ivNSGWrds,ivNSGCTxt,ivNSGTVR,
+	ivNSGTot,ivNSASeq,ivNSAAnl,ivNSAQR,ivNSATNVR,ivNSAWrds,ivNSACTxt,ivNSATVR,ivNSATot,ivSSSeq,ivSSAnl,ivSSQR,ivSSTNV,ivSSWrds,ivSSCTxt,
+	ivSSTV,ivSSTot,ivNCRSeq,ivNCRAnl,ivNCRQR,ivNCRTNV,ivNCRWrds,ivNCRCTxt,ivNCRTV,ivNCRTot,ivYes='',
+---TN
+	tnFullName='',tnDOBLabel='',tnDOB='',tnAgeLabel='',tnAge='',
+	tnStudentIDLabel='',tnStudentID='',tnQtrMnthLabel='',tnQtrMnth='',tnTitle='',tnFrmLvl='',
+	tnGrade='',tnDate='',tnScoreName1='',tnScoreName2='',tnScoreName3='',tnScoreName4='',tnScoreName5='',tnScoreName6='',
+	tnREAD1='',tnREAD2='',tnREAD3='',tnREAD4='',tnREAD5='',tnREAD6='',tnVOC1='',tnVOC2='',tnVOC3='',tnVOC4='',tnVOC5='',tnVOC6='',
+	tnRCMP1='',tnRCMP2='',tnRCMP3='',tnRCMP4='',tnRCMP5='',tnRCMP6='', tnLANG1='',tnLANG2='',tnLANG3='',tnLANG4='',tnLANG5='',tnLANG6='',
+	tnMECH1='',tnMECH2='',tnMECH3='',tnMECH4='',tnMECH5='',tnMECH6='',tnLCMP1='',tnLCMP2='',tnLCMP3='',tnLCMP4='',tnLCMP5='',tnLCMP6='',
+	tnMATH1='',tnMATH2='',tnMATH3='',tnMATH4='',tnMATH5='',tnMATH6='',tnCOMP1='',tnCOMP2='',tnCOMP3='',tnCOMP4='',tnCOMP5='',tnCOMP6='',
+	tnMCMP1='',tnMCMP2='',tnMCMP3='',tnMCMP4='',tnMCMP5='',tnMCMP6='',tnTotScor1='',tnTotScor2='',tnTotScor3='',tnTotScor4='',tnTotScor5='',tnTotScor6='',
+	tnSCI1='',tnSCI2='',tnSCI3='',tnSCI4='',tnSCI5='',tnSCI6='',tnSocStd1='',tnSocStd2='',tnSocStd3='',tnSocStd4='',tnSocStd5='',tnSocStd6='',
+	tnSpel1='',tnSpel2='',tnSpel3='',tnSpel4='',tnSpel5='',tnSpel6='',tnWrdAnl1='',tnWrdAnl2='',tnWrdAnl3='',tnWrdAnl4='',tnWrdAnl5='',tnWrdAnl6='',tnYes='Y',
+	DistrictCode,SchoolCode,[Group]
+from InView x
+inner join Resolved y on x.StudentID = y.StudentID and x.Flag = y.ResolvedFlag
+order by DistrictCode, SchoolCode, [Group], StudentName
+</CommandText>
+              <DataSourceName>Repository</DataSourceName>
+              <Updates />
+              <CommandType>Text</CommandType>
+              <Enabled>true</Enabled>
+            </InspireDataOutputTable>
+          </Tables>
+          <Documents />
+          <GenerationMode>Record</GenerationMode>
+          <Enabled>true</Enabled>
+        </InspireDataOutputDocument>
+      </Documents>
+      <Threads>10</Threads>
+      <ReadOnlyAttribute>false</ReadOnlyAttribute>
+      <Directory>\\educprodfs01\eOPSPROD\TerraNovaProd\eReportingConfig\Student_ReportingLabels\Output</Directory>
+      <Filename>[DistrictCode]_[SchoolCode]_StudentLabels.xml</Filename>
+      <InspireProject>TerraNova/Reports/Student_Label</InspireProject>
+      <EDirectEnabled>false</EDirectEnabled>
+      <EDirectFilename>Metadata.xml</EDirectFilename>
+      <EDirectPerDirectory>false</EDirectPerDirectory>
+      <EDirectDistrictCodeField />
+      <EDirectSchoolCodeField />
+      <EDirectTitleField />
+    </OutputBase>
+    <OutputBase xsi:type="InspireProcessingOutput">
+      <Name>Inspire Processing</Name>
+      <Enabled>true</Enabled>
+      <InputFilenames />
+      <Threads>10</Threads>
+      <MaximumAbends>0</MaximumAbends>
+      <WatchName>Education</WatchName>
+      <OnDemand>false</OnDemand>
+      <OutputPDF>true</OutputPDF>
+      <OutputPS>false</OutputPS>
+      <OutputPDFS>false</OutputPDFS>
+      <Directory />
+      <Timeout>0</Timeout>
+    </OutputBase>
+  </Outputs>
+  <Repository>
+    <Name>Repository</Name>
+    <ConnectionString />
+    <Reservation />
+    <SkipExistingTableLoad>false</SkipExistingTableLoad>
+  </Repository>
+  <ProjectCode>[@AdministrationID]</ProjectCode>
+  <ProjectName />
+  <TeamName />
+  <OutputFiles />
+  <NotificationAddresses />
+  <NotificationEvent>None</NotificationEvent>
+  <Timeout>0</Timeout>
+</Report>

@@ -1,0 +1,17 @@
+def initialize():
+	teamID = ''
+	playerID = ''
+	rootNodes = ['{http://feed.elasticstats.com/schema/basketball/nba/hierarchy-v2.0.xsd}team','{http://feed.elasticstats.com/schema/basketball/nba/hierarchy-v2.0.xsd}team','{http://feed.elasticstats.com/schema/basketball/nba/hierarchy-v2.0.xsd}statistics']
+	for i in range(len(rootNodes)):
+		argStrings = ['league/hierarchy','teams/'+teamID+'/profile','players/'+playerID+'/profile']
+		if i == 0:
+			leagueData = getData(rootNodes[i],argStrings[i])
+		if i == 1:
+			for j in range(len(teamIDs)):
+				teamID = teamIDs[j]
+				teamData = getData(rootNodes[i],argString[i])
+		if i == 2:
+			for j in range(len(teamIDs)):
+				playerID = playerIDs[j]
+				playerData = getData(rootNodes[i],argString[i])
+	getData()

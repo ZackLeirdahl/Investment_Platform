@@ -1,0 +1,21 @@
+declare @AdministrationID int = 593117;
+
+select 
+--Site Information
+Mode, OrganizationID, Grade, City, State,
+ElementAName, ElementAStructureLevelNumber, ElementAElementNumber,ElementASpecialCodes, --District
+ElementBName, ElementBStructureLevelNumber, ElementBElementNumber,ElementBSpecialCodes, --School
+ElementCName, ElementCStructureLevelNumber, ElementCElementNumber,ElementCSpecialCodes, --Class
+--Student Information
+StudentID, StudentLastName, StudentFirstName, StudentMiddleInitial, BirthDateMMDDYY,
+[Chronological AgeInMonths], [StudentGender], [Student ElementNumber],
+[SpecialCodeK],[SpecialCodeL],[SpecialCodeM],[SpecialCodeN],[SpecialCodeO],
+[SpecialCodeP],[SpecialCodeQEthnicity],[SpecialCodeRHomeLanguage Column 1],[SpecialCodeSHomeLanguage Column 2],
+[SpecialCodeTLanguageAccommodation], [SpecialCodeUProgram], [SpecialCodeVReadingAccommodation],
+[SpecialCodeWMathAccommodation], [SpecialCodeXScienceAccommodation], [SpecialCodeYSocialStudies Accommodation],[SpecialCodeZInViewPTCSAccommodation],
+--Test Information
+FirstTestName, FirstTestForm, FirstTestLevel, --TN
+SecondTestName, SecondTestForm, SecondTestLevel, --InView
+TestDateMMDDYY, QuarterMonth, NormsYear
+from Reporting.TerraNovaData
+where AdministrationID = @AdministrationID

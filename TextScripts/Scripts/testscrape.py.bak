@@ -1,0 +1,4 @@
+import xml
+
+a = xml.xmlScraper('http://service.dice.com/api/rest/jobsearch/v1/simple.xml?text=SQL&sort=2&age=14&direct=1&areacode=55414&skill=SQL&pgcnt=50&page=1')
+print(a.scrape())
