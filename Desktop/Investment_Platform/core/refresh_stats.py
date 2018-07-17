@@ -3,7 +3,7 @@ from request import RequestHub
 
 class Refresh:
 	def __init__(self):
-		self.Name = 'Refresh'
+		self.Name = 'RefreshNew'
 	
 	def compute_chart(self, result):
 		formatted = {}
